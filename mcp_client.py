@@ -18,6 +18,21 @@ from mcp import ClientSession, StdioServerParameters, types
 from mcp.client.stdio import stdio_client
 
 
+def _print_tool_result(prefix: str, result: types.CallToolResult) -> None:
+    if result.isError:
+        print(f"{prefix} -> ERROR")
+
+    if result.content:
+        for block in result.content:
+            if isinstance(block, types.TextContent):
+                print(f"{prefix} text -> {block.text}")
+            else:
+                print(f"{prefix} content -> {type(block).__name__}")
+
+    if result.structuredContent is not None:
+        print(f"{prefix} structured -> {result.structuredContent}")
+
+
 async def run() -> None:
     server_path = Path(__file__).with_name("mcp_server.py")
 
@@ -34,6 +49,14 @@ async def run() -> None:
             prompts = await session.list_prompts()
             print(f"Prompts: {[p.name for p in prompts.prompts]}")
 
+            if prompts.prompts:
+                prompt = await session.get_prompt(
+                    "greet_user",
+                    arguments={"name": "Alice", "style": "friendly"},
+                )
+                if prompt.messages:
+                    print(f"Prompt greet_user -> {prompt.messages[0].content}")
+
             resources = await session.list_resources()
             print(f"Resources: {[str(r.uri) for r in resources.resources]}")
 
@@ -45,17 +68,19 @@ async def run() -> None:
 
             # Read a dynamic resource
             greeting = await session.read_resource(AnyUrl("greeting://World"))
-            if greeting.contents and isinstance(greeting.contents[0], types.TextResourceContents):
-                print(f"Resource greeting://World -> {greeting.contents[0].text}")
+            if greeting.contents:
+                first = greeting.contents[0]
+                if isinstance(first, types.TextResourceContents):
+                    print(f"Resource greeting://World -> {first.text}")
+                else:
+                    print(f"Resource greeting://World -> {type(first).__name__}")
 
             # Call a tool
             result = await session.call_tool("add", arguments={"a": 5, "b": 3})
-            if result.content and isinstance(result.content[0], types.TextContent):
-                print(f"Tool add(5,3) text -> {result.content[0].text}")
-            print(f"Tool add(5,3) structured -> {result.structuredContent}")
+            _print_tool_result("Tool add(5,3)", result)
 
             info = await session.call_tool("server_info", arguments={})
-            print(f"Tool server_info structured -> {info.structuredContent}")
+            _print_tool_result("Tool server_info", info)
 
 
 def main() -> None:

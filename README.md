@@ -24,6 +24,7 @@ uv run python mcp_client.py
 它会自动用 stdio 启动本地的 `mcp_server.py` 子进程，然后：
 
 - 列出 prompts/resources/tools
+- 获取 `greet_user` prompt 的渲染结果
 - 读取 `greeting://World` resource
 - 调用 `add` 和 `server_info` tool
 

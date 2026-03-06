@@ -10,7 +10,7 @@ Or use the inspector:
   uv run mcp dev mcp_server.py
 """
 
-from fastmcp import FastMCP
+from fastmcp import FastMCP, Context
 
 mcp = FastMCP("mcp-demo", json_response=True)
 
@@ -19,3 +19,11 @@ mcp = FastMCP("mcp-demo", json_response=True)
 def add(a: int, b: int) -> int:
     """Add two numbers."""
     return a + b
+
+def main() -> None:
+    # Default transport for FastMCP direct execution is stdio.
+    mcp.run()
+
+
+if __name__ == "__main__":
+    main()

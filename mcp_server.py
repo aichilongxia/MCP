@@ -10,9 +10,7 @@ Or use the inspector:
   uv run mcp dev mcp_server.py
 """
 
-from __future__ import annotations
-
-from mcp.server.fastmcp import Context, FastMCP
+from fastmcp import FastMCP
 
 mcp = FastMCP("mcp-demo", json_response=True)
 

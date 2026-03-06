@@ -1,0 +1,5 @@
+# Core MCP Python SDK (includes FastMCP)
+mcp==1.26.0
+
+# Optional: CLI/inspector support (uncomment if you use `uv run mcp dev ...`)
+# mcp[cli]==1.26.0

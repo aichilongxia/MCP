@@ -37,6 +37,9 @@ async def run() -> None:
             resources = await session.list_resources()
             print(f"Resources: {[str(r.uri) for r in resources.resources]}")
 
+            templates = await session.list_resource_templates()
+            print(f"Resource templates: {[t.uriTemplate for t in templates.resourceTemplates]}")
+
             tools = await session.list_tools()
             print(f"Tools: {[t.name for t in tools.tools]}")
 
